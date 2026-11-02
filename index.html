@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DecisionLab - Interactive Decision Model</title>
+<style>
+:root {
+  --blue:#3156d3;
+  --dark:#172642;
+  --bg:#f5f7fb;
+  --line:#dce3ee;
+  --green:#147d58;
+  --red:#b93838;
+}
+*{box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:#182338;
+  font-family:Arial,sans-serif;
+}
+header {
+  background:var(--dark);
+  color:white;
+  padding:28px 6%;
+}
+header h1{margin:0;font-size:32px}
+header p{color:#d2dcef}
+main{max-width:1150px;margin:25px auto;padding:0 18px}
+.panel {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:17px;
+}
+h2{font-size:19px;margin-top:0}
+button,select,input {
+  padding:9px;
+  border:1px solid var(--line);
+  border-radius:7px;
+  font:inherit;
+}
+button {
+  background:var(--blue);
+  color:white;
+  cursor:pointer;
+  border:0;
+  margin:3px;
+}
+button.remove{background:#b93838}
+button.secondary{background:#e9edf5;color:#26334c}
+table {
+  border-collapse:collapse;
+  width:100%;
+  margin-top:12px;
+}
+th,td {
+  padding:9px;
+  border-bottom:1px solid var(--line);
+  text-align:center;
+}
+th{background:#f1f4fa}
+input.payoff{width:85px;text-align:right}
+input.name{width:130px}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:15px;
+}
+.metric {
+  border:1px solid var(--line);
+  padding:12px;
+  border-radius:9px;
+  margin-bottom:8px;
+}
+.metric strong{font-size:20px}
+.winner{color:var(--green);font-weight:bold}
+.stage {
+  border:1px solid var(--line);
+  padding:12px;
+  border-radius:9px;
+  margin:10px 0;
+}
+.chip {
+  display:inline-block;
+  background:#eaf0ff;
+  color:#2948ad;
+  border-radius:20px;
+  padding:5px 9px;
+  margin:3px;
+  font-size:13px;
+}
+.chip.out {
+  background:#eee;
+  color:#777;
+  text-decoration:line-through;
+}
+.flow {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:9px;
+}
+.node {
+  width:min(550px,100%);
+  background:#f1f5ff;
+  border:1px solid #aebde4;
+  border-radius:9px;
+  text-align:center;
+  padding:12px;
+}
+.node.final {
+  background:#effaf4;
+  border-color:#73b89c;
+}
+.arrow{font-size:23px;color:#8391aa}
+.notice {
+  padding:10px;
+  border-radius:8px;
+  background:#eef3fb;
+  margin-top:10px;
+  font-size:13px;
+}
+.error{background:#fff0f0;color:var(--red)}
+.success{background:#eaf8f1;color:var(--green)}
+footer{text-align:center;color:#64748b;padding:20px}
+@media(max-width:700px) {
+  .grid{grid-template-columns:1fr}
+  table{min-width:500px}
+  .table-scroll{overflow-x:auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>DecisionLab</h1>
+  <p>Interactive Decision-Making Model Under Uncertainty</p>
+  <p>Compare alternatives, probabilities, decision criteria and filtering stages.</p>
+</header>
+
+<main>
+
+<section class="panel">
+  <h2>Preloaded Decision Problems</h2>
+  <select id="example" onchange="loadExample()">
+    <option value="farm">Example 1 - Farm Investment</option>
+    <option value="product">Example 2 - Product Launch</option>
+    <option value="custom">Custom Problem</option>
+  </select>
+  <button class="secondary" onclick="loadExample()">Reset Example</button>
+</section>
+
+<section class="panel">
+  <h2>1. Decision Payoff Table</h2>
+  <p>Add alternatives and states of nature. Modify any value directly.</p>
+
+  <div class="table-scroll">
+    <table id="payoffTable"></table>
+  </div>
+
+  <button onclick="addAlternative()">+ Add Alternative</button>
+  <button onclick="addState()">+ Add State</button>
+
+  <div id="validation" class="notice"></div>
+</section>
+
+<div class="grid">
+
+<section class="panel">
+  <h2>2. State Probabilities</h2>
+  <p>Probabilities must total 100%.</p>
+  <div class="table-scroll">
+    <table id="probTable"></table>
+  </div>
+  <div id="probStatus" class="notice"></div>
+</section>
+
+<section class="panel">
+  <h2>3. Decision Criteria Results</h2>
+  <div id="results"></div>
+</section>
+
+</div>
+
+<section class="panel">
+  <h2>4. Staged Filtering</h2>
+  <p>
+    Alternatives are filtered using the following order:
+    Maximax, Maximin, Minimax Regret and EMV/Bayes.
+    Tied alternatives are retained.
+  </p>
+  <div id="stages"></div>
+</section>
+
+<section class="panel">
+  <h2>5. Decision Flow Diagram</h2>
+  <p>Visual representation of the filtering process and final result.</p>
+  <div id="flow" class="flow"></div>
+</section>
+
+<section class="panel">
+  <h2>6. AI Development Record</h2>
+  <p>
+    This webpage was developed with assistance from ChatGPT.
+    <a href="https://chatgpt.com/" target="_blank" rel="noopener">
+      View ChatGPT
+    </a>
+  </p>
+  <p>Replace this link with your shared conversation URL before submission.</p>
+</section>
+
+</main>
+
+<footer>DecisionLab - Interactive Decision Model</footer>
+
+<script>
+const examples = {
+  farm: {
+    alternatives: [
+      "Expand acreage",
+      "Upgrade irrigation",
+      "Keep current farm"
+    ],
+    states: [
+      "High demand",
+      "Stable demand",
+      "Drought"
+    ],
+    payoffs: [
+      [120,65,-45],
+      [82,72,28],
+      [48,48,48]
+    ],
+    probabilities: [0.35,0.40,0.25]
+  },
+
+  product: {
+    alternatives: [
+      "Premium launch",
+      "Budget launch",
+      "Delay launch",
+      "License product"
+    ],
+    states: [
+      "Strong market",
+      "Average market",
+      "Weak market"
+    ],
+    payoffs: [
+      [180,55,-110],
+      [95,62,8],
+      [30,40,25],
+      [105,75,15]
+    ],
+    probabilities: [0.25,0.50,0.25]
+  },
+
+  custom: {
+    alternatives: ["Alternative 1","Alternative 2"],
+    states: ["State 1","State 2"],
+    payoffs: [[10,4],[6,8]],
+    probabilities: [0.5,0.5]
+  }
+};
+
+let data = structuredClone(examples.farm);
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function format(n) {
+  return Number.isFinite(n)
+    ? n.toLocaleString(undefined,{maximumFractionDigits:2})
+    : "—";
+}
+
+function loadExample() {
+  const key = document.getElementById("example").value;
+  data = structuredClone(examples[key]);
+  render();
+}
+
+function addAlternative() {
+  data.alternatives.push(
+    "Alternative " + (data.alternatives.length+1)
+  );
+  data.payoffs.push(data.states.map(()=>0));
+  render();
+}
+
+function addState() {
+  data.states.push("State " + (data.states.length+1));
+  data.payoffs.forEach(row=>row.push(0));
+  data.probabilities.push(0);
+  render();
+}
+
+function removeAlternative(i) {
+  if(data.alternatives.length<=1) {
+    alert("At least one alternative is required.");
+    return;
+  }
+  data.alternatives.splice(i,1);
+  data.payoffs.splice(i,1);
+  render();
+}
+
+function removeState(j) {
+  if(data.states.length<=1) {
+    alert("At least one state is required.");
+    return;
+  }
+  data.states.splice(j,1);
+  data.payoffs.forEach(row=>row.splice(j,1));
+  data.probabilities.splice(j,1);
+  render();
+}
+
+function valid() {
+  const matrixOK =
+    data.alternatives.length>0 &&
+    data.states.length>0 &&
+    data.payoffs.length===data.alternatives.length &&
+    data.payoffs.every(row =>
+      row.length===data.states.length &&
+      row.every(Number.isFinite)
+    );
+
+  const probabilitySum =
+    data.probabilities.reduce((a,b)=>a+b,0);
+
+  const probabilitiesOK =
+    data.probabilities.length===data.states.length &&
+    data.probabilities.every(p=>Number.isFinite(p)&&p>=0) &&
+    Math.abs(probabilitySum-1)<0.00000001;
+
+  document.getElementById("validation").className =
+    "notice "+(matrixOK?"success":"error");
+
+  document.getElementById("validation").textContent =
+    matrixOK ? "Payoff matrix is valid."
+    : "Please enter a valid number in every payoff cell.";
+
+  document.getElementById("probStatus").className =
+    "notice "+(probabilitiesOK?"success":"error");
+
+  document.getElementById("probStatus").textContent =
+    "Probability total: "+
+    format(probabilitySum*100)+"%"+
+    (probabilitiesOK?" - Valid.":" - Must equal 100%.");
+
+  return {matrixOK,probabilitiesOK};
+}
+
+function renderTables() {
+  let html = `<thead><tr><th>Alternative / State</th>`;
+
+  data.states.forEach((s,j)=>{
+    html += `
+      <th>
+        <input class="name" value="${escapeHTML(s)}"
+          onchange="renameState(${j},this.value)">
+        <button class="remove" onclick="removeState(${j})">×</button>
+      </th>`;
+  });
+
+  html += `<th>Action</th></tr></thead><tbody>`;
+
+  data.alternatives.forEach((a,i)=>{
+    html += `
+      <tr>
+        <td>
+          <input class="name" value="${escapeHTML(a)}"
+            onchange="renameAlternative(${i},this.value)">
+        </td>`;
+
+    data.payoffs[i].forEach((v,j)=>{
+      html += `
+        <td>
+          <input class="payoff" type="number" step="any"
+            value="${v}"
+            oninput="updatePayoff(${i},${j},this.value)">
+        </td>`;
+    });
+
+    html += `
+      <td>
+        <button class="remove"
+          onclick="removeAlternative(${i})">Remove</button>
+      </td>
+      </tr>`;
+  });
+
+  document.getElementById("payoffTable").innerHTML =
+    html+"</tbody>";
+
+  let probabilities = `
+    <thead><tr>
+      <th>State</th><th>Probability (%)</th>
+    </tr></thead><tbody>`;
+
+  data.states.forEach((s,j)=>{
+    probabilities += `
+      <tr>
+        <td>${escapeHTML(s)}</td>
+        <td>
+          <input class="payoff" type="number"
+            min="0" max="100" step="any"
+            value="${data.probabilities[j]*100}"
+            oninput="updateProbability(${j},this.value)">
+        </td>
+      </tr>`;
+  });
+
+  document.getElementById("probTable").innerHTML =
+    probabilities+"</tbody>";
+}
+
+function renameAlternative(i,value) {
+  data.alternatives[i] = value.trim() || "Alternative "+(i+1);
+  render();
+}
+
+function renameState(j,value) {
+  data.states[j] = value.trim() || "State "+(j+1);
+  render();
+}
+
+function updatePayoff(i,j,value) {
+  data.payoffs[i][j] =
+    value.trim()==="" ? NaN : Number(value);
+  calculate();
+}
+
+function updateProbability(j,value) {
+  data.probabilities[j] =
+    value.trim()==="" ? NaN : Number(value)/100;
+  calculate();
+}
+
+function findWinners(values,mode) {
+  const best = mode==="min"
+    ? Math.min(...values)
+    : Math.max(...values);
+
+  return {
+    best,
+    indexes:values.map((v,i)=>
+      Math.abs(v-best)<1e-9?i:-1
+    ).filter(i=>i>=0)
+  };
+}
+
+function calculate() {
+  const status=valid();
+
+  if(!status.matrixOK) {
+    document.getElementById("results").innerHTML="";
+    document.getElementById("stages").innerHTML="";
+    document.getElementById("flow").innerHTML="";
+    return;
+  }
+
+  const rows=data.payoffs;
+
+  const maxima=rows.map(r=>Math.max(...r));
+  const minima=rows.map(r=>Math.min(...r));
+
+  const stateBest=data.states.map((s,j)=>
+    Math.max(...rows.map(r=>r[j]))
+  );
+
+  const regrets=rows.map(r=>
+    r.map((v,j)=>stateBest[j]-v)
+  );
+
+  const maximumRegrets=regrets.map(r=>Math.max(...r));
+
+  const emv=rows.map(r=>
+    status.probabilitiesOK
+      ? r.reduce((sum,v,j)=>
+          sum+v*data.probabilities[j],0)
+      : NaN
+  );
+
+  const maximax=findWinners(maxima,"max");
+  const maximin=findWinners(minima,"max");
+  const minimax=findWinners(maximumRegrets,"min");
+
+  const bayes=status.probabilitiesOK
+    ? findWinners(emv,"max")
+    : {best:NaN,indexes:[]};
+
+  const criteria=[
+    ["Maximax",maximax,"Highest possible payoff"],
+    ["Maximin",maximin,"Best worst-case payoff"],
+    ["Minimax Regret",minimax,"Lowest maximum regret"],
+    ["EMV / Bayes",bayes,"Expected monetary value"]
+  ];
+
+  document.getElementById("results").innerHTML =
+    criteria.map(([name,result,description])=>`
+      <div class="metric">
+        <h3>${name}</h3>
+        <strong>${format(result.best)}</strong>
+        <div class="winner">
+          ${result.indexes.length
+            ? result.indexes.map(i=>
+                escapeHTML(data.alternatives[i])
+              ).join(", ")
+            : "No recommendation"}
+        </div>
+        <small>${description}</small>
+      </div>
+    `).join("");
+
+  stagedFiltering(maxima,minima,maximumRegrets,emv,
+    status.probabilitiesOK);
+}
+
+function stagedFiltering(maxima,minima,regrets,emv,probOK) {
+  const criteria=[
+    {
+      name:"Stage 1 - Maximax",
+      values:maxima,
+      mode:"max",
+      description:"Keep the highest possible payoff."
+    },
+    {
+      name:"Stage 2 - Maximin",
+      values:minima,
+      mode:"max",
+      description:"Keep the best worst-case payoff."
+    },
+    {
+      name:"Stage 3 - Minimax Regret",
+      values:regrets,
+      mode:"min",
+      description:"Keep the lowest maximum regret."
+    },
+    {
+      name:"Stage 4 - EMV / Bayes",
+      values:emv,
+      mode:"max",
+      description:"Keep the highest expected payoff."
+    }
+  ];
+
+  let survivors=data.alternatives.map((_,i)=>i);
+  let stages=[];
+
+  criteria.forEach((criterion,index)=>{
+    const before=[...survivors];
+
+    if(index===3&&!probOK) {
+      stages.push({
+        ...criterion,before,after:[],best:NaN,valid:false
+      });
+      survivors=[];
+      return;
+    }
+
+    const values=before.map(i=>criterion.values[i]);
+
+    const best=criterion.mode==="min"
+      ? Math.min(...values)
+      : Math.max(...values);
+
+    survivors=before.filter(i=>
+      Math.abs(criterion.values[i]-best)<1e-9
+    );
+
+    stages.push({
+      ...criterion,before,after:[...survivors],
+      best,valid:true
+    });
+  });
+
+  document.getElementById("stages").innerHTML =
+    stages.map(stage=>`
+      <div class="stage">
+        <strong>${stage.name}</strong>
+        <p>${stage.description}</p>
+        <p>Criterion value: ${format(stage.best)}</p>
+        ${stage.before.map(i=>`
+          <span class="chip ${stage.after.includes(i)?"":"out"}">
+            ${escapeHTML(data.alternatives[i])}
+            ${stage.after.includes(i)?"- Retained":"- Eliminated"}
+          </span>
+        `).join("")}
+        ${!stage.valid
+          ? "<p>Valid probabilities totaling 100% are required.</p>"
+          : ""}
+      </div>
+    `).join("");
+
+  drawFlow(stages);
+}
+
+function drawFlow(stages) {
+  let final=stages[3].valid
+    ? stages[3].after
+    : stages[2].after;
+
+  let html=`
+    <div class="node">
+      <strong>START</strong><br>
+      ${data.alternatives.length} Alternatives
+      <br>${data.states.length} States of Nature
+    </div>
+    <div class="arrow">↓</div>
+  `;
+
+  stages.forEach(stage=>{
+    html+=`
+      <div class="node">
+        <strong>${stage.name}</strong><br>
+        ${stage.valid
+          ? "Best value: "+format(stage.best)+
+            "<br>"+stage.after.length+" alternatives retained"
+          : "Waiting for valid probabilities"}
+      </div>
+      <div class="arrow">↓</div>
+    `;
+  });
+
+  html+=`
+    <div class="node final">
+      <strong>FINAL OUTCOME</strong><br>
+      ${final.length
+        ? final.map(i=>escapeHTML(data.alternatives[i])).join(", ")
+        : "Check probabilities to obtain a final result."}
+    </div>
+  `;
+
+  document.getElementById("flow").innerHTML=html;
+}
+
+function render() {
+  renderTables();
+  calculate();
+}
+
+render();
+</script>
+
+</body>
+</html>
