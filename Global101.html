@@ -1,0 +1,673 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1894.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    span.s1 {font: 12.0px 'Lucida Grande'}
+  </style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p2">&lt;!DOCTYPE html&gt;</p>
+<p class="p2">&lt;html lang="en"&gt;</p>
+<p class="p2">&lt;head&gt;</p>
+<p class="p2">&lt;meta charset="UTF-8"&gt;</p>
+<p class="p2">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p2">&lt;title&gt;DecisionLab - Interactive Decision Model&lt;/title&gt;</p>
+<p class="p2">&lt;style&gt;</p>
+<p class="p2">:root {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--blue:#3156d3;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--dark:#172642;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--bg:#f5f7fb;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--line:#dce3ee;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--green:#147d58;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--red:#b93838;</p>
+<p class="p2">}</p>
+<p class="p2">*{box-sizing:border-box}</p>
+<p class="p2">body {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin:0;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:var(--bg);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color:#182338;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-family:Arial,sans-serif;</p>
+<p class="p2">}</p>
+<p class="p2">header {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:var(--dark);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color:white;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:28px 6%;</p>
+<p class="p2">}</p>
+<p class="p2">header h1{margin:0;font-size:32px}</p>
+<p class="p2">header p{color:#d2dcef}</p>
+<p class="p2">main{max-width:1150px;margin:25px auto;padding:0 18px}</p>
+<p class="p2">.panel {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:white;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border:1px solid var(--line);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius:12px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:18px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin-bottom:17px;</p>
+<p class="p2">}</p>
+<p class="p2">h2{font-size:19px;margin-top:0}</p>
+<p class="p2">button,select,input {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:9px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border:1px solid var(--line);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius:7px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font:inherit;</p>
+<p class="p2">}</p>
+<p class="p2">button {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:var(--blue);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color:white;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>cursor:pointer;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border:0;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin:3px;</p>
+<p class="p2">}</p>
+<p class="p2">button.remove{background:#b93838}</p>
+<p class="p2">button.secondary{background:#e9edf5;color:#26334c}</p>
+<p class="p2">table {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-collapse:collapse;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width:100%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin-top:12px;</p>
+<p class="p2">}</p>
+<p class="p2">th,td {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:9px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-bottom:1px solid var(--line);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>text-align:center;</p>
+<p class="p2">}</p>
+<p class="p2">th{background:#f1f4fa}</p>
+<p class="p2">input.payoff{width:85px;text-align:right}</p>
+<p class="p2">input.name{width:130px}</p>
+<p class="p2">.grid {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display:grid;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>grid-template-columns:repeat(2,minmax(0,1fr));</p>
+<p class="p2"><span class="Apple-converted-space">  </span>gap:15px;</p>
+<p class="p2">}</p>
+<p class="p2">.metric {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border:1px solid var(--line);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:12px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius:9px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin-bottom:8px;</p>
+<p class="p2">}</p>
+<p class="p2">.metric strong{font-size:20px}</p>
+<p class="p2">.winner{color:var(--green);font-weight:bold}</p>
+<p class="p2">.stage {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border:1px solid var(--line);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:12px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius:9px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin:10px 0;</p>
+<p class="p2">}</p>
+<p class="p2">.chip {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display:inline-block;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:#eaf0ff;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color:#2948ad;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius:20px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:5px 9px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin:3px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size:13px;</p>
+<p class="p2">}</p>
+<p class="p2">.chip.out {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:#eee;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color:#777;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>text-decoration:line-through;</p>
+<p class="p2">}</p>
+<p class="p2">.flow {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display:flex;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>flex-direction:column;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>align-items:center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>gap:9px;</p>
+<p class="p2">}</p>
+<p class="p2">.node {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width:min(550px,100%);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:#f1f5ff;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border:1px solid #aebde4;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius:9px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>text-align:center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:12px;</p>
+<p class="p2">}</p>
+<p class="p2">.node.final {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:#effaf4;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-color:#73b89c;</p>
+<p class="p2">}</p>
+<p class="p2">.arrow{font-size:23px;color:#8391aa}</p>
+<p class="p2">.notice {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding:10px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius:8px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:#eef3fb;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin-top:10px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size:13px;</p>
+<p class="p2">}</p>
+<p class="p2">.error{background:#fff0f0;color:var(--red)}</p>
+<p class="p2">.success{background:#eaf8f1;color:var(--green)}</p>
+<p class="p2">footer{text-align:center;color:#64748b;padding:20px}</p>
+<p class="p2">@media(max-width:700px) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.grid{grid-template-columns:1fr}</p>
+<p class="p2"><span class="Apple-converted-space">  </span>table{min-width:500px}</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.table-scroll{overflow-x:auto}</p>
+<p class="p2">}</p>
+<p class="p2">&lt;/style&gt;</p>
+<p class="p2">&lt;/head&gt;</p>
+<p class="p2">&lt;body&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;header&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;h1&gt;DecisionLab&lt;/h1&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;p&gt;Interactive Decision-Making Model Under Uncertainty&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;p&gt;Compare alternatives, probabilities, decision criteria and filtering stages.&lt;/p&gt;</p>
+<p class="p2">&lt;/header&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;main&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;section class="panel"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;h2&gt;Preloaded Decision Problems&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;select id="example" onchange="loadExample()"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;option value="farm"&gt;Example 1 - Farm Investment&lt;/option&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;option value="product"&gt;Example 2 - Product Launch&lt;/option&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;option value="custom"&gt;Custom Problem&lt;/option&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;/select&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;button class="secondary" onclick="loadExample()"&gt;Reset Example&lt;/button&gt;</p>
+<p class="p2">&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;section class="panel"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;h2&gt;1. Decision Payoff Table&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;p&gt;Add alternatives and states of nature. Modify any value directly.&lt;/p&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div class="table-scroll"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;table id="payoffTable"&gt;&lt;/table&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;button onclick="addAlternative()"&gt;+ Add Alternative&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;button onclick="addState()"&gt;+ Add State&lt;/button&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div id="validation" class="notice"&gt;&lt;/div&gt;</p>
+<p class="p2">&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;div class="grid"&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;section class="panel"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;h2&gt;2. State Probabilities&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;p&gt;Probabilities must total 100%.&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div class="table-scroll"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;table id="probTable"&gt;&lt;/table&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div id="probStatus" class="notice"&gt;&lt;/div&gt;</p>
+<p class="p2">&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;section class="panel"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;h2&gt;3. Decision Criteria Results&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div id="results"&gt;&lt;/div&gt;</p>
+<p class="p2">&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;section class="panel"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;h2&gt;4. Staged Filtering&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>Alternatives are filtered using the following order:</p>
+<p class="p2"><span class="Apple-converted-space">    </span>Maximax, Maximin, Minimax Regret and EMV/Bayes.</p>
+<p class="p2"><span class="Apple-converted-space">    </span>Tied alternatives are retained.</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div id="stages"&gt;&lt;/div&gt;</p>
+<p class="p2">&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;section class="panel"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;h2&gt;5. Decision Flow Diagram&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;p&gt;Visual representation of the filtering process and final result.&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div id="flow" class="flow"&gt;&lt;/div&gt;</p>
+<p class="p2">&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;section class="panel"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;h2&gt;6. AI Development Record&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>This webpage was developed with assistance from ChatGPT.</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;a href="https://chatgpt.com/" target="_blank" rel="noopener"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>View ChatGPT</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;/a&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;p&gt;Replace this link with your shared conversation URL before submission.&lt;/p&gt;</p>
+<p class="p2">&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;/main&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;footer&gt;DecisionLab - Interactive Decision Model&lt;/footer&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;script&gt;</p>
+<p class="p2">const examples = {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>farm: {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>alternatives: [</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Expand acreage",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Upgrade irrigation",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Keep current farm"</p>
+<p class="p2"><span class="Apple-converted-space">    </span>],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>states: [</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"High demand",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Stable demand",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Drought"</p>
+<p class="p2"><span class="Apple-converted-space">    </span>],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>payoffs: [</p>
+<p class="p2"><span class="Apple-converted-space">      </span>[120,65,-45],</p>
+<p class="p2"><span class="Apple-converted-space">      </span>[82,72,28],</p>
+<p class="p2"><span class="Apple-converted-space">      </span>[48,48,48]</p>
+<p class="p2"><span class="Apple-converted-space">    </span>],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>probabilities: [0.35,0.40,0.25]</p>
+<p class="p2"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>product: {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>alternatives: [</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Premium launch",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Budget launch",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Delay launch",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"License product"</p>
+<p class="p2"><span class="Apple-converted-space">    </span>],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>states: [</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Strong market",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Average market",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Weak market"</p>
+<p class="p2"><span class="Apple-converted-space">    </span>],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>payoffs: [</p>
+<p class="p2"><span class="Apple-converted-space">      </span>[180,55,-110],</p>
+<p class="p2"><span class="Apple-converted-space">      </span>[95,62,8],</p>
+<p class="p2"><span class="Apple-converted-space">      </span>[30,40,25],</p>
+<p class="p2"><span class="Apple-converted-space">      </span>[105,75,15]</p>
+<p class="p2"><span class="Apple-converted-space">    </span>],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>probabilities: [0.25,0.50,0.25]</p>
+<p class="p2"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>custom: {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>alternatives: ["Alternative 1","Alternative 2"],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>states: ["State 1","State 2"],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>payoffs: [[10,4],[6,8]],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>probabilities: [0.5,0.5]</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2">};</p>
+<p class="p1"><br></p>
+<p class="p2">let data = structuredClone(examples.farm);</p>
+<p class="p1"><br></p>
+<p class="p2">function escapeHTML(value) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>return String(value).replace(/[&amp;&lt;&gt;"']/g, c =&gt; ({</p>
+<p class="p2"><span class="Apple-converted-space">    </span>"&amp;":"&amp;amp;","&lt;":"&amp;lt;","&gt;":"&amp;gt;",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>'"':"&amp;quot;","'":"&amp;#39;"</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}[c]));</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function format(n) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>return Number.isFinite(n)</p>
+<p class="p2"><span class="Apple-converted-space">    </span>? n.toLocaleString(undefined,{maximumFractionDigits:2})</p>
+<p class="p2"><span class="Apple-converted-space">    </span>: "—";</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function loadExample() {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const key = document.getElementById("example").value;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data = structuredClone(examples[key]);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>render();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function addAlternative() {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.alternatives.push(</p>
+<p class="p2"><span class="Apple-converted-space">    </span>"Alternative " + (data.alternatives.length+1)</p>
+<p class="p2"><span class="Apple-converted-space">  </span>);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.payoffs.push(data.states.map(()=&gt;0));</p>
+<p class="p2"><span class="Apple-converted-space">  </span>render();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function addState() {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.states.push("State " + (data.states.length+1));</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.payoffs.forEach(row=&gt;row.push(0));</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.probabilities.push(0);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>render();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function removeAlternative(i) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>if(data.alternatives.length&lt;=1) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>alert("At least one alternative is required.");</p>
+<p class="p2"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.alternatives.splice(i,1);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.payoffs.splice(i,1);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>render();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function removeState(j) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>if(data.states.length&lt;=1) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>alert("At least one state is required.");</p>
+<p class="p2"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.states.splice(j,1);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.payoffs.forEach(row=&gt;row.splice(j,1));</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.probabilities.splice(j,1);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>render();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function valid() {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const matrixOK =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>data.alternatives.length&gt;0 &amp;&amp;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>data.states.length&gt;0 &amp;&amp;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>data.payoffs.length===data.alternatives.length &amp;&amp;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>data.payoffs.every(row =&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>row.length===data.states.length &amp;&amp;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>row.every(Number.isFinite)</p>
+<p class="p2"><span class="Apple-converted-space">    </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const probabilitySum =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>data.probabilities.reduce((a,b)=&gt;a+b,0);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const probabilitiesOK =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>data.probabilities.length===data.states.length &amp;&amp;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>data.probabilities.every(p=&gt;Number.isFinite(p)&amp;&amp;p&gt;=0) &amp;&amp;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>Math.abs(probabilitySum-1)&lt;0.00000001;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>document.getElementById("validation").className =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>"notice "+(matrixOK?"success":"error");</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>document.getElementById("validation").textContent =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>matrixOK ? "Payoff matrix is valid."</p>
+<p class="p2"><span class="Apple-converted-space">    </span>: "Please enter a valid number in every payoff cell.";</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>document.getElementById("probStatus").className =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>"notice "+(probabilitiesOK?"success":"error");</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>document.getElementById("probStatus").textContent =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>"Probability total: "+</p>
+<p class="p2"><span class="Apple-converted-space">    </span>format(probabilitySum*100)+"%"+</p>
+<p class="p2"><span class="Apple-converted-space">    </span>(probabilitiesOK?" - Valid.":" - Must equal 100%.");</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>return {matrixOK,probabilitiesOK};</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function renderTables() {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>let html = `&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Alternative / State&lt;/th&gt;`;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.states.forEach((s,j)=&gt;{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>html += `</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;th&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;input class="name" value="${escapeHTML(s)}"</p>
+<p class="p2"><span class="Apple-converted-space">          </span>onchange="renameState(${j},this.value)"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;button class="remove" onclick="removeState(${j})"&gt;×&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/th&gt;`;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>html += `&lt;th&gt;Action&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;`;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.alternatives.forEach((a,i)=&gt;{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>html += `</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;tr&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;td&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;input class="name" value="${escapeHTML(a)}"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>onchange="renameAlternative(${i},this.value)"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/td&gt;`;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>data.payoffs[i].forEach((v,j)=&gt;{</p>
+<p class="p2"><span class="Apple-converted-space">      </span>html += `</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;td&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;input class="payoff" type="number" step="any"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>value="${v}"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>oninput="updatePayoff(${i},${j},this.value)"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/td&gt;`;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>html += `</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;td&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;button class="remove"</p>
+<p class="p2"><span class="Apple-converted-space">          </span>onclick="removeAlternative(${i})"&gt;Remove&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/td&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/tr&gt;`;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>document.getElementById("payoffTable").innerHTML =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>html+"&lt;/tbody&gt;";</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>let probabilities = `</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;thead&gt;&lt;tr&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;th&gt;State&lt;/th&gt;&lt;th&gt;Probability (%)&lt;/th&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;`;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.states.forEach((s,j)=&gt;{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>probabilities += `</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;tr&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;td&gt;${escapeHTML(s)}&lt;/td&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;td&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;input class="payoff" type="number"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>min="0" max="100" step="any"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>value="${data.probabilities[j]*100}"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>oninput="updateProbability(${j},this.value)"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/td&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/tr&gt;`;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>document.getElementById("probTable").innerHTML =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>probabilities+"&lt;/tbody&gt;";</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function renameAlternative(i,value) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.alternatives[i] = value.trim() || "Alternative "+(i+1);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>render();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function renameState(j,value) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.states[j] = value.trim() || "State "+(j+1);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>render();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function updatePayoff(i,j,value) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.payoffs[i][j] =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>value.trim()==="" ? NaN : Number(value);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>calculate();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function updateProbability(j,value) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>data.probabilities[j] =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>value.trim()==="" ? NaN : Number(value)/100;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>calculate();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function findWinners(values,mode) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const best = mode==="min"</p>
+<p class="p2"><span class="Apple-converted-space">    </span>? Math.min(...values)</p>
+<p class="p2"><span class="Apple-converted-space">    </span>: Math.max(...values);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>return {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>best,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>indexes:values.map((v,i)=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>Math.abs(v-best)&lt;1e-9?i:-1</p>
+<p class="p2"><span class="Apple-converted-space">    </span>).filter(i=&gt;i&gt;=0)</p>
+<p class="p2"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function calculate() {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const status=valid();</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>if(!status.matrixOK) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>document.getElementById("results").innerHTML="";</p>
+<p class="p2"><span class="Apple-converted-space">    </span>document.getElementById("stages").innerHTML="";</p>
+<p class="p2"><span class="Apple-converted-space">    </span>document.getElementById("flow").innerHTML="";</p>
+<p class="p2"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const rows=data.payoffs;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const maxima=rows.map(r=&gt;Math.max(...r));</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const minima=rows.map(r=&gt;Math.min(...r));</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const stateBest=data.states.map((s,j)=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>Math.max(...rows.map(r=&gt;r[j]))</p>
+<p class="p2"><span class="Apple-converted-space">  </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const regrets=rows.map(r=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>r.map((v,j)=&gt;stateBest[j]-v)</p>
+<p class="p2"><span class="Apple-converted-space">  </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const maximumRegrets=regrets.map(r=&gt;Math.max(...r));</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const emv=rows.map(r=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>status.probabilitiesOK</p>
+<p class="p2"><span class="Apple-converted-space">      </span>? r.reduce((sum,v,j)=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>sum+v*data.probabilities[j],0)</p>
+<p class="p2"><span class="Apple-converted-space">      </span>: NaN</p>
+<p class="p2"><span class="Apple-converted-space">  </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const maximax=findWinners(maxima,"max");</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const maximin=findWinners(minima,"max");</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const minimax=findWinners(maximumRegrets,"min");</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const bayes=status.probabilitiesOK</p>
+<p class="p2"><span class="Apple-converted-space">    </span>? findWinners(emv,"max")</p>
+<p class="p2"><span class="Apple-converted-space">    </span>: {best:NaN,indexes:[]};</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const criteria=[</p>
+<p class="p2"><span class="Apple-converted-space">    </span>["Maximax",maximax,"Highest possible payoff"],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>["Maximin",maximin,"Best worst-case payoff"],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>["Minimax Regret",minimax,"Lowest maximum regret"],</p>
+<p class="p2"><span class="Apple-converted-space">    </span>["EMV / Bayes",bayes,"Expected monetary value"]</p>
+<p class="p2"><span class="Apple-converted-space">  </span>];</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>document.getElementById("results").innerHTML =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>criteria.map(([name,result,description])=&gt;`</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div class="metric"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;h3&gt;${name}&lt;/h3&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;strong&gt;${format(result.best)}&lt;/strong&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="winner"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>${result.indexes.length</p>
+<p class="p2"><span class="Apple-converted-space">            </span>? result.indexes.map(i=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                </span>escapeHTML(data.alternatives[i])</p>
+<p class="p2"><span class="Apple-converted-space">              </span>).join(", ")</p>
+<p class="p2"><span class="Apple-converted-space">            </span>: "No recommendation"}</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;small&gt;${description}&lt;/small&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>`).join("");</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>stagedFiltering(maxima,minima,maximumRegrets,emv,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>status.probabilitiesOK);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function stagedFiltering(maxima,minima,regrets,emv,probOK) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const criteria=[</p>
+<p class="p2"><span class="Apple-converted-space">    </span>{</p>
+<p class="p2"><span class="Apple-converted-space">      </span>name:"Stage 1 - Maximax",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>values:maxima,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>mode:"max",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>description:"Keep the highest possible payoff."</p>
+<p class="p2"><span class="Apple-converted-space">    </span>},</p>
+<p class="p2"><span class="Apple-converted-space">    </span>{</p>
+<p class="p2"><span class="Apple-converted-space">      </span>name:"Stage 2 - Maximin",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>values:minima,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>mode:"max",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>description:"Keep the best worst-case payoff."</p>
+<p class="p2"><span class="Apple-converted-space">    </span>},</p>
+<p class="p2"><span class="Apple-converted-space">    </span>{</p>
+<p class="p2"><span class="Apple-converted-space">      </span>name:"Stage 3 - Minimax Regret",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>values:regrets,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>mode:"min",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>description:"Keep the lowest maximum regret."</p>
+<p class="p2"><span class="Apple-converted-space">    </span>},</p>
+<p class="p2"><span class="Apple-converted-space">    </span>{</p>
+<p class="p2"><span class="Apple-converted-space">      </span>name:"Stage 4 - EMV / Bayes",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>values:emv,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>mode:"max",</p>
+<p class="p2"><span class="Apple-converted-space">      </span>description:"Keep the highest expected payoff."</p>
+<p class="p2"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><span class="Apple-converted-space">  </span>];</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>let survivors=data.alternatives.map((_,i)=&gt;i);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>let stages=[];</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>criteria.forEach((criterion,index)=&gt;{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>const before=[...survivors];</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>if(index===3&amp;&amp;!probOK) {</p>
+<p class="p2"><span class="Apple-converted-space">      </span>stages.push({</p>
+<p class="p2"><span class="Apple-converted-space">        </span>...criterion,before,after:[],best:NaN,valid:false</p>
+<p class="p2"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><span class="Apple-converted-space">      </span>survivors=[];</p>
+<p class="p2"><span class="Apple-converted-space">      </span>return;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>const values=before.map(i=&gt;criterion.values[i]);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>const best=criterion.mode==="min"</p>
+<p class="p2"><span class="Apple-converted-space">      </span>? Math.min(...values)</p>
+<p class="p2"><span class="Apple-converted-space">      </span>: Math.max(...values);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>survivors=before.filter(i=&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>Math.abs(criterion.values[i]-best)&lt;1e-9</p>
+<p class="p2"><span class="Apple-converted-space">    </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>stages.push({</p>
+<p class="p2"><span class="Apple-converted-space">      </span>...criterion,before,after:[...survivors],</p>
+<p class="p2"><span class="Apple-converted-space">      </span>best,valid:true</p>
+<p class="p2"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>document.getElementById("stages").innerHTML =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>stages.map(stage=&gt;`</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div class="stage"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;strong&gt;${stage.name}&lt;/strong&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;p&gt;${stage.description}&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;p&gt;Criterion value: ${format(stage.best)}&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>${stage.before.map(i=&gt;`</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;span class="chip ${stage.after.includes(i)?"":"out"}"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span>${escapeHTML(data.alternatives[i])}</p>
+<p class="p2"><span class="Apple-converted-space">            </span>${stage.after.includes(i)?"- Retained":"- Eliminated"}</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;/span&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>`).join("")}</p>
+<p class="p2"><span class="Apple-converted-space">        </span>${!stage.valid</p>
+<p class="p2"><span class="Apple-converted-space">          </span>? "&lt;p&gt;Valid probabilities totaling 100% are required.&lt;/p&gt;"</p>
+<p class="p2"><span class="Apple-converted-space">          </span>: ""}</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>`).join("");</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>drawFlow(stages);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function drawFlow(stages) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>let final=stages[3].valid</p>
+<p class="p2"><span class="Apple-converted-space">    </span>? stages[3].after</p>
+<p class="p2"><span class="Apple-converted-space">    </span>: stages[2].after;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>let html=`</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="node"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;strong&gt;START&lt;/strong&gt;&lt;br&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>${data.alternatives.length} Alternatives</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;br&gt;${data.states.length} States of Nature</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="arrow"&gt;<span class="s1">↓</span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>`;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>stages.forEach(stage=&gt;{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>html+=`</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div class="node"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;strong&gt;${stage.name}&lt;/strong&gt;&lt;br&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>${stage.valid</p>
+<p class="p2"><span class="Apple-converted-space">          </span>? "Best value: "+format(stage.best)+</p>
+<p class="p2"><span class="Apple-converted-space">            </span>"&lt;br&gt;"+stage.after.length+" alternatives retained"</p>
+<p class="p2"><span class="Apple-converted-space">          </span>: "Waiting for valid probabilities"}</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div class="arrow"&gt;<span class="s1">↓</span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>`;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>html+=`</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="node final"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;strong&gt;FINAL OUTCOME&lt;/strong&gt;&lt;br&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>${final.length</p>
+<p class="p2"><span class="Apple-converted-space">        </span>? final.map(i=&gt;escapeHTML(data.alternatives[i])).join(", ")</p>
+<p class="p2"><span class="Apple-converted-space">        </span>: "Check probabilities to obtain a final result."}</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>`;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>document.getElementById("flow").innerHTML=html;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function render() {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>renderTables();</p>
+<p class="p2"><span class="Apple-converted-space">  </span>calculate();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">render();</p>
+<p class="p2">&lt;/script&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;/body&gt;</p>
+<p class="p2">&lt;/html&gt;</p>
+</body>
+</html>
